@@ -47,7 +47,7 @@ add_user() {
     echo "${user}:${pass}" | chpasswd
     echo "$user ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
-cat << EOF >> /data/data/com.termux/files/usr/bin/debian
+cat << EOF > /data/data/com.termux/files/usr/bin/debian
 #!/bin/bash
 bash ~/.sound
 if [ "$1" = "-r" ]; then
