@@ -1,5 +1,4 @@
 
-<center><img src="./image/demo-xfce.png"></center>
 <p align="center"><b>Easily Install Full Debian Linux Verious Type Of Desktop in Termux</b></p>
 
 <div align="center">
@@ -35,14 +34,9 @@
    - `bash gui.sh`
    - Now select **KFCE**, **KDE**, **LXDE**, **LXQT** OR **GNOME** Desktop (any one)
 
-<details>
-<summary><b><code>DEMO IMAGES: </code></b></summary>
 
-|GNOME|LXDE|LXQT|KDE|
-|--|--|--|--|
-|![img](image/demo-gnome.jpeg)|![img](image/demo-lxde.jpeg)|![img](image/demo-lxqt.jpeg)|![img](/image/demo-kde.jpeg)|
 
-</details>
+
 
 3. **You have to note your VNC password !!**
 4. DEBIAN image is now successfully installed.
