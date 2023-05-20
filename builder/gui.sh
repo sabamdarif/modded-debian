@@ -399,8 +399,18 @@ banner
     echo -e " ${G} Successfully Installed !"${W}
     sleep 1
     echo
+    echo
+
+    echo -e " ${G}Now restart the termux ."${W}
+
+    echo
+    echo -e "${G}Type ${C}debian${G} to login into normal users."{W}
+    echo
+    echo -e "${G} Type ${C}debian -r${G} to login into root user."{W}
+    echo
     echo -e " ${G}Type ${C}vncstart${G} to run Vncserver."${W}
     echo
+
     echo -e " ${G}Type ${C}vncstop${G} to stop Vncserver."${W}
     echo
     echo -e " ${C}Install VNC VIEWER OR Nethunter Kex on your Device."${W}
