@@ -48,9 +48,9 @@ add_user() {
     echo "$user ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
 cat << EOF > /data/data/com.termux/files/usr/bin/debian
-#!/bin/bash
 bash ~/.sound
-if [ "$1" = "-r" ]; then
+#!/bin/bash
+if [ "/$1" = "-r" ]; then
   proot-distro login debian --bind /dev/null:/proc/sys/kernel/cap_last_cap
 else
   proot-distro login --user $user debian --bind /dev/null:/proc/sys/kernel/cap_last_cap
