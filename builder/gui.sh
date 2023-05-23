@@ -233,7 +233,8 @@ if [[ ! -d "/home/$user/.vnc" ]]; then
 mkdir -p "/home/$user/.vnc"
     fi
 cat << EOF >> /home/$user/.vnc/xstartup
-#!/bin/sh                                                                        export XDG_CURRENT_DESKTOP="GNOME"
+#!/bin/sh                                                                        
+export XDG_CURRENT_DESKTOP="GNOME"
 service dbus start
 gnome-shell --x11
 EOF
