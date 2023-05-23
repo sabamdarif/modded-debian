@@ -229,7 +229,8 @@ service dbus start
 gnome-shell --x11
 EOF
 chmod +x ~/.vnc/xstartup
-if [[ ! -d "/home/$user/.vnc" ]]; then                                                 mkdir -p "/home/$user/.vnc"
+if [[ ! -d "/home/$user/.vnc" ]]; then                                                 
+mkdir -p "/home/$user/.vnc"
     fi
 cat << EOF >> /home/$user/.vnc/xstartup
 #!/bin/sh                                                                        export XDG_CURRENT_DESKTOP="GNOME"
