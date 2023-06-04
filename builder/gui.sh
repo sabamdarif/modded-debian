@@ -50,7 +50,7 @@ add_user() {
 cat << EOF > /data/data/com.termux/files/usr/bin/debian
 bash ~/.sound
 #!/bin/bash
-if [ "/$1" = "-r" ]; then
+if [ "\$1" = "-r" ]; then
   proot-distro login debian --bind /dev/null:/proc/sys/kernel/cap_last_cap
 else
   proot-distro login --user $user debian --bind /dev/null:/proc/sys/kernel/cap_last_cap
@@ -406,9 +406,9 @@ banner
     echo -e " ${G}Now restart the termux ."${W}
 
     echo
-    echo -e "${G}Type ${C}debian${G} to login into normal users."{W}
+    echo -e "${G}Type ${C}debian${G} to login into normal users."${W}
     echo
-    echo -e "${G} Type ${C}debian -r${G} to login into root user."{W}
+    echo -e "${G} Type ${C}debian -r${G} to login into root user."${W}
     echo
     echo -e " ${G}Type ${C}vncstart${G} to run Vncserver."${W}
     echo
