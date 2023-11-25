@@ -100,7 +100,7 @@ vlc_installer() {
 		echo
 		sleep 1
 		sudo apt update && sudo apt install vlc -y
-	fi
+	fi 
 
 }
 
