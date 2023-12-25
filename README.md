@@ -2,11 +2,9 @@
 <p align="center"><b>Easily Install Full Debian Linux Verious Type Of Desktop in Termux</b></p>
 
 <div align="center">
-
-[![GitHub stars](https://img.shields.io/github/stars/sabamdarif/modded-debian)](https://github.com/sabamdarif/modded-debian/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/sabamdarif/modded-debian)](https://github.com/sabamdarif/modded-debian/issues)
-[![GitHub license](https://img.shields.io/github/license/sabamdarif/modded-debian)](https://github.com/sabamdarif/modded-debian/blob/main/LICENSE)
-
+![GitHub Repo stars](https://img.shields.io/github/stars/sabamdarif/modded-debian)
+![GitHub issues](https://img.shields.io/github/issues/sabamdarif/modded-debian)
+![GitHub License](https://img.shields.io/github/license/sabamdarif/modded-debian)
 </div>
 
 ### Features:
@@ -18,7 +16,6 @@
 - :books: Easy for Beginners
 - :computer: Add new Application Menu
 - :hammer: Install XFCE, LXDE, LXQT, KDE, or GNOME Desktop
-- :art: More customization (new styles added and new fonts etc...)
 
 ### Installation:
 
@@ -33,9 +30,6 @@
    - `debian`
    - `bash gui.sh`
    - Now select **KFCE**, **KDE**, **LXDE**, **LXQT** OR **GNOME** Desktop (any one)
-
-
-
 
 
 3. **You have to note your VNC password !!**
@@ -58,13 +52,11 @@
 - **Type `debian -r` to run DEBIAN CLI AS ROOT USER.**
 - **Type `vncstart` to run Vncserver**
 - **Type `vncstop` to stop Vncserver**
-- **Type `fixvnc` if the vnc server not started (for Android 12 users)**
+- **Type `vncstop -f` to stop Vncserver forcefully**
 - **Type `bash remove.sh` to remove DEBIAN**
 
 ### ISSUES:
-- **Issue:-** Android 12 users have a problem of vncserver automatically stop and and show " [Process completed (signal 9) - press Enter] " &  the next time vncserver not starting
+- **Issue:-** Vnc server related issue like *vnc autostop* , *Apps not showing*
+- **Solution:-** Login into root user using `kali -r` then launch vncserver
 
-- **Solution:-** *use command `fixvnc` and the server started again*
-
-### If you like our work then dont forget to give a Star :)
-
+### If you like my work then dont forget to give a Star :)
