@@ -14,9 +14,8 @@
 - :speaker: Fixed Audio Output
 - :computer:GNOME work perfectly
 - :globe_with_meridians: 2 Browsers (Chromium & Mozilla Firefox)
-- :tv: VLC Media Player and MPV media player / Pre installed SOFTWARE-STORE (IN GNOME)
+- :tv: VLC Media Player
 - :books: Easy for Beginners
-- :computer: Add new Application Menu
 - :hammer: Install XFCE, LXDE, LXQT, KDE, or GNOME Desktop
 
 ### Installation:
