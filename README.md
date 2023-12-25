@@ -5,7 +5,8 @@
    
 ![GitHub Repo stars](https://img.shields.io/github/stars/sabamdarif/modded-debian)
 ![GitHub issues](https://img.shields.io/github/issues/sabamdarif/modded-debian)
-![GitHub License](https://img.shields.io/github/license/sabamdarif/modded-debian)
+![GitHub License](https://img.shields.io/github/license/sabamdarif/modded-debian%20)
+
 </div>
 
 ### Features:
