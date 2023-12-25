@@ -2,6 +2,7 @@
 <p align="center"><b>Easily Install Full Debian Linux Verious Type Of Desktop in Termux</b></p>
 
 <div align="center">
+   
 ![GitHub Repo stars](https://img.shields.io/github/stars/sabamdarif/modded-debian)
 ![GitHub issues](https://img.shields.io/github/issues/sabamdarif/modded-debian)
 ![GitHub License](https://img.shields.io/github/license/sabamdarif/modded-debian)
