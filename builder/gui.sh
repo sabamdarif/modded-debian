@@ -8,12 +8,44 @@ C="$(printf '\033[1;36m')"
 
 banner() {
 clear
+printf "\033[32m code by @sabamdrif \033[0m\n"
+printf "\033[32m subscribe my YouTube Channel Hello Android \033[0m\n"
 
 }
 
+add_user() {
+	  apt autoremove sudo -y
+    banner
+    read -p $' \e[1;31m[\e[0m\e[1;77m~\e[0m\e[1;31m]\e[0m\e[1;92m Input Username [Lowercase] : \e[0m\e[1;96m\en' user
+    echo -e "${W}"
+    read -p $' \e[1;31m[\e[0m\e[1;77m~\e[0m\e[1;31m]\e[0m\e[1;92m Input Password : \e[0m\e[1;96m\en' pass
+    echo -e "${W}"
+    useradd -m -s $(which bash) ${user}
+    echo "${user}:${pass}" | chpasswd
+    apt update -y
+    apt install sudo -y
+    echo "$user ALL=(ALL:ALL) ALL" >> /etc/sudoers
+    cat <<EOF > "/data/data/com.termux/files/usr/bin/debian"
+if [ "\$1" == "-r" ]; then
+    proot-distro login debian
+else
+    proot-distro login --user "$user" debian
+fi 
+EOF
+    clear
+
+}
+
+fix_broken() {
+    banner
+    echo -e "${Y}Checking error and fix it..."${W}
+    sudo dpkg --configure -a
+     
+    sudo apt-get install --fix-broken keyboard-configuration -y
+}
 
 package() {
-	banner
+  banner
     echo -e "${R} [${W}-${R}]${C} Checking required packages..."${W}
     apt update -y
     apt install sudo -y
@@ -24,43 +56,15 @@ package() {
     sudo apt-mark hold udisks2
     sudo apt-mark unhold gvfs-daemons
     sudo dpkg --configure -a
-    packs=(sudo wget curl nano git qterminal mousepad librsvg2-common inetutils-tools dialog tightvncserver tigervnc-standalone-server tigervnc-tools dbus-x11 )
+    packs=(sudo wget curl nano git qterminal mousepad librsvg2-common inetutils-tools dialog tightvncserver tigervnc-standalone-server tigervnc-tools dbus-x1)
     sudo dpkg --configure -a
-    for hulu in "${packs[@]}"; do
-        type -p "$hulu" &>/dev/null || {
-            echo -e "\n${R} [${W}-${R}]${G} Installing package : ${Y}$hulu${C}"${W}
-            sudo apt-get install "$hulu" -y --no-install-recommends
+    for pack_name in "${packs[@]}"; do
+        type -p "$pack_name" &>/dev/null || {
+            echo -e "\n${R} [${W}-${R}]${G} Installing package : ${Y}$pack_name${C}"${W}
+            sudo apt-get install "$pack_name" -y --no-install-recommends
         }
     done
-    sudo apt update -y
-}
-
-add_user() {
-    banner
-    apt update 
-    apt install sudo -y
-    read -p $' \e[1;31m[\e[0m\e[1;77m~\e[0m\e[1;31m]\e[0m\e[1;92m Input Username [Lowercase] : \e[0m\e[1;96m\en' user
-    echo -e "${W}"
-    read -p $' \e[1;31m[\e[0m\e[1;77m~\e[0m\e[1;31m]\e[0m\e[1;92m Input Password : \e[0m\e[1;96m\en' pass
-    echo -e "${W}"
-    useradd -m -s $(which bash) ${user}
-    echo "${user}:${pass}" | chpasswd
-    echo "$user ALL=(ALL:ALL) ALL" >> /etc/sudoers
-
-cat << EOF > /data/data/com.termux/files/usr/bin/debian
-bash ~/.sound
-#!/bin/bash
-if [ "\$1" = "-r" ]; then
-  proot-distro login debian --bind /dev/null:/proc/sys/kernel/cap_last_cap
-else
-  proot-distro login --user $user debian --bind /dev/null:/proc/sys/kernel/cap_last_cap
-fi
-
-EOF
-
-    #chmod +x /data/data/com.termux/files/usr/bin/debian
-    clear
-
+    fix_broken
 }
 
 firefox_install() {
@@ -82,17 +86,16 @@ firefox_install() {
 			echo
 			sudo apt update;sudo apt install firefox-esr -y 
 		fi
-
 }
 	
 vlc_installer() {
-
 	clear
 	banner
-	echo
+  read -p "${G}Do you to install VLC (y/n) "${w} answer
+if [ "$answer" == "y" ]; then
 	echo "${Y}Checking if vlc is available or not"${W}
 	if [[ $(command -v vlc) ]]; then
-		echo 
+		echo
 		echo "${G}vlc is already Installed"${W}
 		sleep 1
 	else
@@ -100,17 +103,21 @@ vlc_installer() {
 		echo
 		sleep 1
 		sudo apt update && sudo apt install vlc -y
-	fi 
-
+	fi
+else
+    echo "${C}Canceling...."${W}
+    sleep 1.2
+fi
 }
 
 select_desktop_type() {
 	clear
+  termux-wake-lock
 	banner
 	echo
 	echo -e "${R} [${W}-${R}]${C} Select Desktop Type"${W}
 	echo
-	echo "${C}1. XFCE4"${W}
+	echo "${C}1. XFCE4 (recommended)"${W}
 	echo
 	echo "${C}2. LXDE"${W}
 	echo
@@ -118,14 +125,13 @@ select_desktop_type() {
 	echo
 	echo "${C}4. KDE"${W}
 	echo
-	echo "${C}5. GNOME"${W}
+	echo "${C}5. GNOME (Beta)"${W}
 	echo
 	read -p "${Y}Select option(default 1): "${W} select_method
 	echo
 	sleep 1.5
-
 	if [[ $select_method == "1" ]]; then
-		kfce_mode
+		xfce_mode
 	fi
 	if [[ $select_method == "2" ]]; then
 		lxde_mode
@@ -140,13 +146,32 @@ select_desktop_type() {
 		gnome_mode
 	fi
 	if [[ $select_method == "" ]]; then
-		kfce_mode
+		xfce_mode
 	fi
 }
 
-kfce_mode() {
-	add_user
-	banner
+vncstop() {
+ if [[ -e "/bin/vncstop" ]]; then
+        rm -rf /bin/vncstop
+    fi
+    cat <<EOF > "/bin/vncstop"
+#!/usr/bin/env bash
+if [ "\$1" == "-f" ]; then
+    pkill Xtigervnc
+else
+    vncserver -kill :*
+fi
+rm -rf /username/.vnc/localhost:*.pid
+rm -rf /tmp/.X1-lock
+rm -rf /tmp/.X11-unix/X1
+EOF
+chmod +x /bin/vncstop
+}
+
+xfce_mode() {
+  add_user
+  package
+  banner
 	echo -e "${R} [${W}-${R}]${C} Installing XFCE DESKTOP"${W}
 	apt update
        sudo apt install xfce4* -y
@@ -155,112 +180,78 @@ kfce_mode() {
   if [[ ! -d "$HOME/.vnc" ]]; then
         mkdir -p "$HOME/.vnc"
     fi
-   if [[ -e "/usr/local/bin/vncstart" ]]; then
-        rm -rf /usr/local/bin/vncstart
+   if [[ -e "/bin/vncstart" ]]; then
+        rm -rf /bin/vncstart
     fi                                                                       
-    echo "#!/usr/bin/env bash" >>/usr/local/bin/vncstart
-  echo "dbus-launch" >>/usr/local/bin/vncstart
-  echo "vncserver -geometry 1280x720  -xstartup /usr/bin/startxfce4" >>/usr/local/bin/vncstart
-  chmod +x /usr/local/bin/vncstart
-  if [[ -e "/usr/local/bin/vncstop" ]]; then
-        rm -rf /usr/local/bin/vncstop
-    fi
-  echo "#!/usr/bin/env bash" >>/usr/local/bin/vncstop
-  echo "vncserver -kill :*" >>/usr/local/bin/vncstop
-  echo "rm -rf /username/.vnc/localhost:*.pid" >>/usr/local/bin/vncstop
-  echo "rm -rf /tmp/.X1-lock" >>/usr/local/bin/vncstop
-  echo "rm -rf /tmp/.X11-unix/X1" >>/usr/local/bin/vncstop
-    chmod +x /usr/local/bin/vncstop
-  if [[ -e "/usr/local/bin/fixvnc" ]]; then
-        rm -rf /usr/local/bin/fixvnc
-    fi
-  echo "pkill Xtigervnc" >>/usr/local/bin/fixvnc
-  echo "return \$?" >>/usr/local/bin/fixvnc
-    chmod +x /usr/local/bin/fixvnc
-
+    echo "#!/usr/bin/env bash" >>/bin/vncstart
+  echo "dbus-launch" >>/bin/vncstart
+  echo "vncserver -geometry 1500x720  -xstartup /usr/bin/startxfce4" >>/bin/vncstart
+  chmod +x /bin/vncstart
+  vncstop
     echo "export DISPLAY=":1"" >> /etc/profile
     echo "export PULSE_SERVER=127.0.0.1" >> /etc/profile
     source /etc/profile
-    cd ~
-    package
 }
 
 gnome_mode() {
-	add_user
+  add_user
 	banner
 	echo -e "${R} [${W}-${R}]${C} Installing GNOME DESKTOP"${W}
 	apt update
-         apt install install gnome-shell gnome-terminal gnome-tweaks -y
-	sudo dpkg --configure -a
-    sudo apt --fix-broken install -y
-    packs=(wget curl nautilus nano gedit tigervnc-standalone-server tigervnc-tools dbus-x11 )
-    sudo dpkg --configure -a
-    for hulu in "${packs[@]}"; do
-        type -p "$hulu" &>/dev/null || {
-            echo -e "\n${R} [${W}-${R}]${G} Installing package : ${Y}$hulu${C}"${W}
-            sudo apt-get install "$hulu" -y --no-install-recommends
-	       echo -e "${R} [${W}-${R}]${C} Setting up VNC Server..."${W}
+	apt install gnome-shell gnome-terminal gnome-tweaks -y
+	dpkg --configure -a
+	apt --fix-broken install -y
+	packs=(wget curl nautilus nano gedit tigervnc-standalone-server tigervnc-tools dbus-x11 )
+	for pack in "${packs[@]}"; do
+        type -p "$pack" &>/dev/null || {
+            echo -e "\n${R} [${W}-${R}]${G} Installing package : ${Y}$pack${C}"${W}
+            sudo apt-get install "$pack" -y --no-install-recommends
+        }
+    done
+    echo -e "${R} [${W}-${R}]${C} Setting up VNC Server..."${W}
  if [[ ! -d "$HOME/.vnc" ]]; then
     mkdir -p "$HOME/.vnc"
 fi
-
 if [[ -e "$HOME/.vnc/xstartup" ]]; then
     rm "$HOME/.vnc/xstartup"
 fi
-
-touch "$HOME/.vnc/xstartup"
-cat << EOF >> "$HOME/.vnc/xstartup"
+cat <<EOF > "$HOME/.vnc/xstartup"
 export XDG_CURRENT_DESKTOP="GNOME"
 service dbus start
-gnome-shell --x11
+echo "gnome-shell --x11    
 EOF
-
 chmod +x "$HOME/.vnc/xstartup"
 
 mkdir -p "/home/$user/.vnc"
 cp -r "$HOME/.vnc/xstartup" "/home/$user/.vnc/xstartup"
 chmod +x "/home/$user/.vnc/xstartup"
-   if [[ -e "/usr/local/bin/vncstart" ]]; then
-        rm -rf /usr/local/bin/vncstart 
+   if [[ -e "/bin/vncstart" ]]; then
+        rm -rf /bin/vncstart
     fi
-  echo "#!/usr/bin/env bash" >>/usr/local/bin/vncstart
-  echo "dbus-launch" >>/usr/local/bin/vncstart
+  echo "#!/usr/bin/env bash" >>/bin/vncstart
   echo "vncserver -geometry 2580x1080 " >>/bin/vncstart
     chmod +x /bin/vncstart
-  if [[ -e "/bin/vncstop" ]]; then
-        rm -rf /bin/vncstop
-    fi
-  echo "#!/usr/bin/env bash" >>/bin/vncstop
-  echo "vncserver -kill :*" >>/usr/local/bin/vncstop
-  echo "rm -rf $HOME/.vnc/localhost:*.pid" >>/bin/vncstop
-  echo "rm -rf /tmp/.X1-lock" >>/bin/vncstop
-  echo "rm -rf /tmp/.X11-unix/X1" >>/bin/vncstop
-    chmod +x /bin/vncstop
-  if [[ -e "/usr/local/bin/fixvnc" ]]; then
-        rm -rf /bin/fixvnc
-    fi
-  echo "pkill Xtigervnc" >>/bin/fixvnc
-  echo "rm -rf $HOME/.vnc/localhost:*.pid" >>/bin/fixvnc
-  echo "rm -rf /tmp/.X1-lock" >>/bin/fixvnc
-  echo "rm -rf /tmp/.X11-unix/X1" >>/bin/fixvnc
-    chmod +x /bin/fixvnc
+  vncstop
+    echo "export PULSE_SERVER=127.0.0.1" >> /etc/profile
+    source /etc/profile
  echo -e "${R} [${W}-${R}]${C} Fix Vnc Login Issue.."${W}
    for file in $(find /usr -type f -iname "*login1*"); do rm -rf $file
    done
- 
+   echo "proot-distro login debian" > /data/data/com.termux/files/usr/bin/debian
 }
 
 lxde_mode() {
-	add_user
-	banner
+  add_user
+  package
+  banner
 	echo -e "${R} [${W}-${R}]${C} Installing LXDE DESKTOP"${W}
 	apt update
-	sudo apt install lxde lxterminal debian-themes -y
+	sudo apt install lxde lxterminal debia-themes -y
 	apt-get install udisks2 -y
 	echo " " > /var/lib/dpkg/info/udisks2.postinst
 	apt-mark hold udisks2
 	apt-get install sudo tzdata -y
-	apt-get install lxde lxterminal debian-themes -y
+	apt-get install lxde lxterminal debia-themes -y
 	mv /usr/bin/lxpolkit /usr/bin/lxpolkit.bak
 	apt-get --fix-broken install -y
 	apt-get clean
@@ -269,44 +260,30 @@ lxde_mode() {
   if [[ ! -d "$HOME/.vnc" ]]; then
         mkdir -p "$HOME/.vnc"
     fi
-   if [[ -e "/usr/local/bin/vncstart" ]]; then
-        rm -rf /usr/local/bin/vncstart
+ if [[ -e "/bin/vncstart" ]]; then
+        rm -rf /bin/vncstart
     fi
-    echo "#!/usr/bin/env bash" >>/usr/local/bin/vncstart
-  echo "dbus-launch" >>/usr/local/bin/vncstart
-  echo "vncserver -geometry 1280x720 -name remote-desktop :1" >>/usr/local/bin/vncstart
-  chmod +x /usr/local/bin/vncstart
-  if [[ -e "/usr/local/bin/vncstop" ]]; then
-        rm -rf /usr/local/bin/vncstop
-    fi
-  echo "#!/usr/bin/env bash" >>/usr/local/bin/vncstop
-  echo "vncserver -kill :*" >>/usr/local/bin/vncstop
-  echo "rm -rf /username/.vnc/localhost:*.pid" >>/usr/local/bin/vncstop
-  echo "rm -rf /tmp/.X1-lock" >>/usr/local/bin/vncstop
-  echo "rm -rf /tmp/.X11-unix/X1" >>/usr/local/bin/vncstop
-    chmod +x /usr/local/bin/vncstop
-  if [[ -e "/usr/local/bin/fixvnc" ]]; then
-        rm -rf /usr/local/bin/fixvnc
-    fi
-  echo "pkill Xtigervnc" >>/usr/local/bin/fixvnc
-  echo "return \$?" >>/usr/local/bin/fixvnc
-    chmod +x /usr/local/bin/fixvnc
+  echo "#!/usr/bin/env bash" >>/bin/vncstart
+  echo "dbus-launch" >>/bin/vncstart
+  echo "vncserver -geometry 1600x900 -name remote-desktop :1" >>/bin/vncstart
+    chmod +x /bin/vncstart
+  vncstop
     echo "export DISPLAY=":1"" >> /etc/profile
     echo "export PULSE_SERVER=127.0.0.1" >> /etc/profile
     source /etc/profile
-    package
 }
 
 lxqt_mode(){
-	add_user
-	banner
+  add_user
+  package
+  banner
 	echo -e "${R} [${W}-${R}]${C} Installing LXQT DESKTOP"${W}
 	apt-get update
 	apt-get install udisks2 -y
 	echo " " > /var/lib/dpkg/info/udisks2.postinst
 	apt-mark hold udisks2
 	apt-get install sudo tzdata -y
-	apt-get install lxqt qterminal debian-themes -y
+	apt-get install lxqt qterminal debia-themes -y
 	apt-get install tigervnc-standalone-server dbus-x11 -y
 	apt-get --fix-broken install -y
 	apt-get clean
@@ -315,38 +292,23 @@ lxqt_mode(){
   if [[ ! -d "$HOME/.vnc" ]]; then
         mkdir -p "$HOME/.vnc"
     fi
-   if [[ -e "/usr/local/bin/vncstart" ]]; then
-        rm -rf /usr/local/bin/vncstart
+if [[ -e "/bin/vncstart" ]]; then
+        rm -rf /bin/vncstart
     fi
-    echo "#!/usr/bin/env bash" >>/usr/local/bin/vncstart
-  echo "dbus-launch" >>/usr/local/bin/vncstart
-  echo "vncserver -geometry 1280x720 -xstartup /bin/startlxqt" >>/usr/local/bin/vncstart
-  chmod +x /usr/local/bin/vncstart
-  if [[ -e "/usr/local/bin/vncstop" ]]; then
-        rm -rf /usr/local/bin/vncstop
-    fi
-  echo "#!/usr/bin/env bash" >>/usr/local/bin/vncstop
-  echo "vncserver -kill :*" >>/usr/local/bin/vncstop
-  echo "rm -rf /username/.vnc/localhost:*.pid" >>/usr/local/bin/vncstop
-  echo "rm -rf /tmp/.X1-lock" >>/usr/local/bin/vncstop
-  echo "rm -rf /tmp/.X11-unix/X1" >>/usr/local/bin/vncstop
-    chmod +x /usr/local/bin/vncstop
-  if [[ -e "/usr/local/bin/fixvnc" ]]; then
-        rm -rf /usr/local/bin/fixvnc
-    fi
-  echo "pkill Xtigervnc" >>/usr/local/bin/fixvnc
-  echo "return \$?" >>/usr/local/bin/fixvnc
-    chmod +x /usr/local/bin/fixvnc
-
+  echo "#!/usr/bin/env bash" >>/bin/vncstart
+  echo "dbus-launch" >>/bin/vncstart
+  echo "vncserver -geometry 1600x900 -xstartup /bin/startlxqt" >>/bin/vncstart
+    chmod +x /bin/vncstart
+  vncstop
     echo "export DISPLAY=":1"" >> /etc/profile
     echo "export PULSE_SERVER=127.0.0.1" >> /etc/profile
     source /etc/profile
-    package
 }
 
 kde_mode() {
-	add_user
-	banner
+  add_user
+  package
+  banner
 	echo -e "${R} [${W}-${R}]${C} Installing KDE DESKTOP"${W}
 	apt update 
 	apt-get install udisks2 -y
@@ -362,66 +324,30 @@ kde_mode() {
   if [[ ! -d "$HOME/.vnc" ]]; then
         mkdir -p "$HOME/.vnc"
     fi
-   if [[ -e "/usr/local/bin/vncstart" ]]; then
-        rm -rf /usr/local/bin/vncstart
+   if [[ -e "/bin/vncstart" ]]; then
+        rm -rf /bin/vncstart
     fi
-    echo "#!/usr/bin/env bash" >>/usr/local/bin/vncstart
-  echo "dbus-launch" >>/usr/local/bin/vncstart
-  echo "vncserver -geometry 1280x720 -xstartup /bin/startplasma-x11" >>/usr/local/bin/vncstart
-  chmod +x /usr/local/bin/vncstart
-  if [[ -e "/usr/local/bin/vncstop" ]]; then
-        rm -rf /usr/local/bin/vncstop
-    fi
-  echo "#!/usr/bin/env bash" >>/usr/local/bin/vncstop
-  echo "vncserver -kill :*" >>/usr/local/bin/vncstop
-  echo "rm -rf /username/.vnc/localhost:*.pid" >>/usr/local/bin/vncstop
-  echo "rm -rf /tmp/.X1-lock" >>/usr/local/bin/vncstop
-  echo "rm -rf /tmp/.X11-unix/X1" >>/usr/local/bin/vncstop
-    chmod +x /usr/local/bin/vncstop
-  if [[ -e "/usr/local/bin/fixvnc" ]]; then
-        rm -rf /usr/local/bin/fixvnc
-    fi
-  echo "pkill Xtigervnc" >>/usr/local/bin/fixvnc
-  echo "return \$?" >>/usr/local/bin/fixvnc
-    chmod +x /usr/local/bin/fixvnc
-
+    echo "#!/usr/bin/env bash" >>/bin/vncstart
+  echo "dbus-launch" >>/bin/vncstart
+  echo "vncserver -geometry 1600x900 -xstartup /bin/startplasma-x11" >>/bin/vncstart
+  chmod +x /bin/vncstart
+   vncstop
     echo "export DISPLAY=":1"" >> /etc/profile
     echo "export PULSE_SERVER=127.0.0.1" >> /etc/profile
     source /etc/profile
-    package
-
 }
-
-		
-
-fix_broken() {
-    banner
-    echo -e "${Y}Checking error and fix it..."${W}
-    sudo dpkg --configure -a
-     
-    sudo apt-get install --fix-broken keyboard-configuration -y
-    rm ~/.bashrc
-    cp /etc/skel/.bashrc ~
-}
-
 
 note() {
 banner
     echo -e " ${G} Successfully Installed !"${W}
     sleep 1
     echo
+    echo -e " ${G}Type ${C}debian${G} to login as normal user"${W}
     echo
-
-    echo -e " ${G}Now restart the termux ."${W}
-
-    echo
-    echo -e "${G}Type ${C}debian${G} to login into normal users."${W}
-    echo
-    echo -e "${G} Type ${C}debian -r${G} to login into root user."${W}
+    echo -e " ${G}Type ${C}debian -r${G} to login as root user"${W}
     echo
     echo -e " ${G}Type ${C}vncstart${G} to run Vncserver."${W}
     echo
-
     echo -e " ${G}Type ${C}vncstop${G} to stop Vncserver."${W}
     echo
     echo -e " ${C}Install VNC VIEWER OR Nethunter Kex on your Device."${W}
@@ -432,37 +358,24 @@ banner
     echo
     echo -e " ${C}Set the Picture Quality to High for better Quality."${W}
     echo 
-
     echo -e " ${C}Click on Connect & Input the Password."${W}
     echo 
+    echo -e " ${C}If you install the GNOME DESKKTOP use UltraVnc mode in Nethunter Kex"${W}
+    echo
     echo -e " ${C}Enjoy :D"${W}
     echo
     echo
+termux-wake-unlock
+}
+
+add_sound() {
+	echo "$(echo "bash ~/.sound" | cat - /data/data/com.termux/files/usr/bin/debia)" > /data/data/com.termux/files/usr/bin/debia
 
 }
 
-
-clenup() {
-	clear
-    banner
-	echo
-	echo "Cleaning up system.."
-	echo
-    sleep 2
-    cd ~
-	sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
-	sleep 2
-	sudo dpkg --configure -a
-	apt autoremove -y
-	sudo apt autoremove xfce4-terminal -y
-        sleep 2
-    sudo apt clean && sudo apt autoclean
-	
-}
-
+#full_update
 select_desktop_type
 firefox_install
 vlc_installer
-clenup
-fix_broken
+add_sound
 note
