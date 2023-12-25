@@ -15,17 +15,20 @@ printf "\033[32m subscribe my YouTube Channel Hello Android \033[0m\n"
 
 check_pack() {
 	banner
+    termux-wake-lock
+    sleep 0.2
+    termux-setup-storage
 	echo -e "${R} [${W}-${R}]${C} Checking required packages..."${W}
 if [[ `command -v pulseaudio` && `command -v proot-distro` && `command -v wget` ]]; then
         echo -e "\n${R} [${W}-${R}]${G} Packages already installed."${W}
     else
         packs=(pulseaudio proot proot-distro)
-        for hulu in "${packs[@]}"; do
-            type -p "$hulu" &>/dev/null || {
-                echo -e "\n${R} [${W}-${R}]${G} Installing package : ${Y}$hulu${C}"${W}
+        for pack_name in "${packs[@]}"; do
+            type -p "$pack_name" &>/dev/null || {
+                echo -e "\n${R} [${W}-${R}]${G} Installing package : ${Y}$pack_name${C}"${W}
                 pkg update -y
                 pkg upgrade -y
-                pkg install "$hulu" -y
+                pkg install "$pack_name" -y
             }
         done
     fi
@@ -85,6 +88,7 @@ notes() {
         echo -e "\n${R} [${W}-${R}]${G} Error Installing Distro !"${W}
         exit 0
     fi
+    termux-wake-unlock
 }
 
 
