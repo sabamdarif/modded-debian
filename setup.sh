@@ -67,7 +67,7 @@ add_sound() {
     if [[ -e "$PREFIX/var/lib/proot-distro/installed-rootfs/debian /root/gui.sh" ]]; then
         chmod +x $PREFIX/var/lib/proot-distro/installed-rootfs/debian/root/gui.sh
     else
-        mv -f /data/data/com.termux/files/home/modded-debian/builder/gui.sh $PREFIX/var/lib/proot-distro/installed-rootfs/debian/root/gui.sh
+        cp -f /data/data/com.termux/files/home/modded-debian/builder/gui.sh $PREFIX/var/lib/proot-distro/installed-rootfs/debian/root/gui.sh
         chmod +x $PREFIX/var/lib/proot-distro/installed-rootfs/debian/root/gui.sh
     fi
 
