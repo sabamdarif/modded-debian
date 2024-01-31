@@ -30,8 +30,16 @@
    - `bash setup.sh`
    - `debian`
    - `bash gui.sh`
-   - Now select **KFCE**, **KDE**, **LXDE**, **LXQT** OR **GNOME** Desktop (any one)
+   - Now select **KFCE**, **KDE**, **LXDE**, **LXQT** OR **GNOME** Desktop
 
+   <details>
+<summary><b><code>DEMO IMAGES: </code></b></summary>
+
+|GNOME|LXDE|LXQT|KDE|
+|--|--|--|--|
+|![img](/images/)|![img](image/demo-lxde.png)|![img](image/demo-lxqt.png)|![img](/images/debian-kde.png)|
+
+</details>
 
 3. **You have to note your VNC password !!**
 4. DEBIAN image is now successfully installed.
@@ -58,6 +66,6 @@
 
 ### ISSUES:
 - **Issue:-** Vnc server related issue like *vnc autostop* , *Apps not showing*
-- **Solution:-** Login into root user using `kali -r` then launch vncserver
+- **Solution:-** Login into root user using `debian -r` then launch vncserver
 
 ### If you like my work then dont forget to give a Star :)
