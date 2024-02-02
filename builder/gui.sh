@@ -323,6 +323,20 @@ lxde_mode() {
   echo "dbus-launch" >>/bin/vncstart
   echo "vncserver -geometry 1600x900 -name remote-desktop :1" >>/bin/vncstart
     chmod +x /bin/vncstart
+    mkdir -p ~/.vnc
+if [[ -e "~/.vnc/xstartup" ]]; then
+       rm ~/.vnc/xstartup
+    fi
+    cat <<EOF > "~/.vnc/xstartup"
+    #!/bin/bash
+export PULSE_SERVER=127.0.0.1
+xrdb $HOME/.Xresources
+dbus-launch startlxde
+EOF
+chmod +x ~/.vnc/xstartup
+mkdir -p /home/$user/.vnc
+cp ~/.vnc/xstartup /home/$user/.vnc/
+chmod +x /home/$user/.vnc/xstartup
   vncstop
     echo "export DISPLAY=":1"" >> /etc/profile
     echo "export PULSE_SERVER=127.0.0.1" >> /etc/profile
@@ -539,5 +553,5 @@ install_desktop_type
 browser_installer
 vlc_installer
 add_sound
-checkup_xfce
+#checkup_xfce
 note
