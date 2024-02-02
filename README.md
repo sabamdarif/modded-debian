@@ -32,12 +32,12 @@
    - `bash gui.sh`
    - Now select **KFCE**, **KDE**, **LXDE**, **LXQT** OR **GNOME** Desktop
 
-   <details>
+<details>
 <summary><b><code>DEMO IMAGES: </code></b></summary>
 
-|GNOME|LXDE|LXQT|KDE|
-|--|--|--|--|
-|![img](/images/)|![img](image/demo-lxde.png)|![img](image/demo-lxqt.png)|![img](/images/debian-kde.png)|
+|GNOME|LXDE|XFCE|KDE|LXQT|
+|--|--|--|--|--|
+|![img](images/gnome.png)|![img](images/lxde.png)|![img](images/xfce.png)|![img](images/kde.png)|![img](images/lxqt.png)|
 
 </details>
 
